@@ -1,0 +1,1175 @@
+{
+  "info": {
+    "_postman_id": "fca9250c-543b-4e66-b63d-095723aae199",
+    "name": "DMoney_API_Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54454509",
+    "_collection_link": "https://go.postman.co/collection/54454509-fca9250c-543b-4e66-b63d-095723aae199?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Admin Login",
+      "item": [
+        {
+          "name": "admin_login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var url = \"http://localhost:5000\";\r",
+                  "pm.collectionVariables.set(\"base_url\",url);\r",
+                  "\r",
+                  "var key =\"ROADTOSDET\";\r",
+                  "pm.collectionVariables.set(\"secret_key\",key);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "var token = json_data.token;\r",
+                  "pm.collectionVariables.set(\"admin_token\",token);\r",
+                  "pm.test(\"The User Can Log In Successfully\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"Login successful\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is 200\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@dmoney.com\",\r\n  \"password\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/user/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Creation",
+      "item": [
+        {
+          "name": "agent_creation",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var random_num = _.random(10000000,99999999);\r",
+                  "pm.collectionVariables.set(\"random_id\", random_num);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "pm.test(\"Agent Creation has been Successful\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"User created\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "var id = json_data.user.id;\r",
+                  "var email = json_data.user.email;\r",
+                  "var phn = json_data.user.phone_number;\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"agent_id\", id);\r",
+                  "pm.collectionVariables.set(\"agent_email\", email);\r",
+                  "pm.collectionVariables.set(\"agent_phn\", phn);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{secret_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{$randomFullName}}\",\r\n  \"email\": \"rakibfr28+{{random_id}}@gmail.com\",\r\n  \"password\": \"12345\",\r\n  \"phone_number\": \"018{{random_id}}\",\r\n  \"nid\": \"9{{random_id}}1\",\r\n  \"role\": \"Agent\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "customer1_creation",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var random_num = _.random(10000000,99999999);\r",
+                  "pm.collectionVariables.set(\"random_id\", random_num);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "pm.test(\"Customer-1 Creation has been Successful\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"User created\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "var id = json_data.user.id;\r",
+                  "var email = json_data.user.email;\r",
+                  "var phn = json_data.user.phone_number;\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"customer1_id\", id);\r",
+                  "pm.collectionVariables.set(\"customer1_email\", email);\r",
+                  "pm.collectionVariables.set(\"customer1_phn\", phn);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{secret_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{$randomFullName}}\",\r\n  \"email\": \"rakibfr28+{{random_id}}@gmail.com\",\r\n  \"password\": \"12345\",\r\n  \"phone_number\": \"018{{random_id}}\",\r\n  \"nid\": \"9{{random_id}}1\",\r\n  \"role\": \"Customer\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "customer2_creation",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var random_num = _.random(10000000,99999999);\r",
+                  "pm.collectionVariables.set(\"random_id\", random_num);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "pm.test(\"Customer-2 Creation has been Successful\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"Registration successful\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "var id = json_data.user.id;\r",
+                  "var email = json_data.user.email;\r",
+                  "var phn = json_data.user.phone_number;\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"customer2_id\", id);\r",
+                  "pm.collectionVariables.set(\"customer2_email\", email);\r",
+                  "pm.collectionVariables.set(\"customer2_phn\", phn);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{secret_key}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{$randomFullName}}\",\r\n  \"email\": \"rakibfr28+{{random_id}}@gmail.com\",\r\n  \"password\": \"12345\",\r\n  \"phone_number\": \"018{{random_id}}\",\r\n  \"nid\": \"9{{random_id}}1\",\r\n  \"role\": \"Customer\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Activation",
+      "item": [
+        {
+          "name": "activate_user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "pm.test(\"Agent Activation has been Successful\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"User updated successfully\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{secret_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"active\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/user/update/{{agent_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "update",
+                "{{agent_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activate_customer1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "pm.test(\"Customer-1 Activation has been Successful\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"User updated successfully\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{secret_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"active\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/user/update/{{customer1_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "update",
+                "{{customer1_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activate_customer2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "pm.test(\"Customer-2 Activation has been Successful\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"User updated successfully\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{secret_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"active\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/user/update/{{customer2_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "update",
+                "{{customer2_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "System to Agent",
+      "item": [
+        {
+          "name": "system_login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "var token = json_data.token;\r",
+                  "pm.collectionVariables.set(\"system_token\",token);\r",
+                  "pm.test(\"SYSTEM LOGIN has been Successful\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"Login successful\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"SYSTEM\",\r\n  \"password\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/user/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "system_to_agent_deposit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "pm.test(\"SYSTEM deposit to Agent has been Successful\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"SYSTEM deposit to Agent successful\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{system_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{secret_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"from_account\": \"SYSTEM\",\r\n  \"to_account\": \"{{agent_phn}}\",\r\n  \"amount\": 10000\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transaction/deposit",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaction",
+                "deposit"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Agent Login",
+      "item": [
+        {
+          "name": "agent_primary_login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "pm.test(\"OTP Sent Successfully\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"OTP sent to your registered email address\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{agent_email}}\",\r\n  \"password\": \"12345\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/user/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "gmail_list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json_data = pm.response.json();\r",
+                  "let latest_email_id = json_data.messages[0].id;\r",
+                  "pm.collectionVariables.set(\"email_id\", latest_email_id);\r",
+                  "pm.test(\"Got Gmail List Successfully\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{gmail_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages",
+              "protocol": "https",
+              "host": [
+                "gmail",
+                "googleapis",
+                "com"
+              ],
+              "path": [
+                "gmail",
+                "v1",
+                "users",
+                "me",
+                "messages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "read_email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json_data = pm.response.json();\r",
+                  "let snippet = json_data.snippet;\r",
+                  "let otp = snippet.match(/(?<=is:\\s*)\\d{4}/)[0];\r",
+                  "pm.collectionVariables.set(\"otp\", otp);\r",
+                  "pm.test(\"OTP is Extracted Successfully\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.snippet).to.contains(\"Your One-Time Password (OTP) for DMoney login is:\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is as Expected\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{gmail_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://gmail.googleapis.com/gmail/v1/users/me/messages/{{email_id}}",
+              "protocol": "https",
+              "host": [
+                "gmail",
+                "googleapis",
+                "com"
+              ],
+              "path": [
+                "gmail",
+                "v1",
+                "users",
+                "me",
+                "messages",
+                "{{email_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "verify_otp",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "var token = json_data.token;\r",
+                  "pm.collectionVariables.set(\"agent_token\",token);\r",
+                  "pm.test(\"The Agent Can Log In Successfully\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"Login successful\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is 200\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"identifier\": \"{{agent_email}}\",\r\n  \"otp\": \"{{otp}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/user/verify-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Agent to Customer Deposit",
+      "item": [
+        {
+          "name": "agent_customer_depo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json_data = pm.response.json();\r",
+                  "var token = json_data.token;\r",
+                  "pm.test(\"The Agent Can Deposit Successfully\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.expect(json_data.message).to.contains(\"Deposit successful\");\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"The Status Code is 201\",\r",
+                  "function()\r",
+                  "{\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{agent_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{secret_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"from_account\": \"{{agent_phn}}\",\r\n  \"to_account\": \"{{customer1_phn}}\",\r\n  \"amount\": 500\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transaction/deposit",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaction",
+                "deposit"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "random_id",
+      "value": ""
+    },
+    {
+      "key": "agent_id",
+      "value": ""
+    },
+    {
+      "key": "agent_email",
+      "value": ""
+    },
+    {
+      "key": "agent_phn",
+      "value": ""
+    },
+    {
+      "key": "customer2_id",
+      "value": ""
+    },
+    {
+      "key": "customer2_email",
+      "value": ""
+    },
+    {
+      "key": "customer2_phn",
+      "value": ""
+    },
+    {
+      "key": "customer1_id",
+      "value": ""
+    },
+    {
+      "key": "customer1_email",
+      "value": ""
+    },
+    {
+      "key": "customer1_phn",
+      "value": ""
+    },
+    {
+      "key": "secret_key",
+      "value": ""
+    },
+    {
+      "key": "system_token",
+      "value": ""
+    },
+    {
+      "key": "gmail_token",
+      "value": ""
+    },
+    {
+      "key": "email_id",
+      "value": ""
+    },
+    {
+      "key": "otp",
+      "value": ""
+    },
+    {
+      "key": "agent_token",
+      "value": ""
+    }
+  ]
+}
