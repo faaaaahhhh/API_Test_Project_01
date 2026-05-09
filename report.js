@@ -17,6 +17,9 @@ newman.run({
     ],
     reporter: {
         htmlextra: {
+
+
+            
             export: './Reports/report.html',
         }
     }
